@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Precedent Study: Sketchpad</title>
+  <style>
+    :root {
+      --bg: #0c0c10;
+      --card: #15151d;
+      --card-soft: #1e1e29;
+      --accent: #ffcc66;
+      --accent-soft: rgba(255, 204, 102, 0.12);
+      --text-main: #f5f5f7;
+      --text-muted: #a0a0b5;
+      --border-subtle: #2a2a3a;
+      --shadow-soft: 0 20px 40px rgba(0, 0, 0, 0.6);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #242436 0, #050509 55%);
+      color: var(--text-main);
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 40px auto 60px;
+      padding: 0 20px;
+    }
+
+    .page-header {
+      text-align: left;
+      margin-bottom: 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .page-title {
+      font-size: 28px;
+      margin: 10px 0 4px;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Section divider / nav-ish label between assignment parts */
+    .part-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 44px 0 16px;
+    }
+
+    .part-label .line {
+      flex: 1;
+      height: 1px;
+      background: var(--border-subtle);
+    }
+
+    .part-label .part-text {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Layout grid */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 800px) {
+      .layout-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .stack-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    /* Card / panel */
+    .card {
+      background: linear-gradient(145deg, #12121a, #181824);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 18px 18px 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .card-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Datasheet “table” but card-like */
+    .datasheet-grid {
+      display: grid;
+      grid-template-columns: 130px minmax(0, 1fr);
+      column-gap: 12px;
+      row-gap: 6px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 640px) {
+      .datasheet-grid {
+        grid-template-columns: 110px minmax(0, 1fr);
+      }
+    }
+
+    .datasheet-label {
+      color: var(--text-muted);
+      font-weight: 500;
+      padding: 6px 0;
+    }
+
+    .datasheet-value {
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+    }
+
+    .datasheet-value:last-child {
+      border-bottom: none;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+    }
+
+    /* Summary card */
+    .summary-text p {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #d7d7e8;
+      margin: 8px 0;
+    }
+
+    .summary-text p:first-child {
+      margin-top: 4px;
+    }
+
+    /* Bibliography cards */
+    .biblio-card {
+      background: var(--card-soft);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 10px 11px;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .biblio-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    ol {
+      padding-left: 18px;
+      margin: 6px 0 0;
+    }
+
+    ol li {
+      margin: 5px 0;
+      line-height: 1.5;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    /* Analysis card number chip */
+    .analysis-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .analysis-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .analysis-heading .analysis-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .analysis-heading .analysis-prompt {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-left: 32px;
+      margin-top: -4px;
+      display: block;
+    }
+
+    .analysis-text p {
+      font-size: 13px;
+      line-height: 1.75;
+      color: #d7d7e8;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="page-header">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Precedent Study · Computational Design
+      </div>
+      <h1 class="page-title">Sketchpad: A Man-Machine Graphical Communication System</h1>
+      <div class="page-subtitle">
+        Ivan Edward Sutherland · 1963 · TX-2 · Interactive graphical system, CAD / HCI prototype
+      </div>
+    </header>
+
+    <!-- ============ PART 1 : DATA COLLECTION ============ -->
+    <div class="part-label">
+      <span class="part-text">Part 1 · Data Collection</span>
+      <span class="line"></span>
+    </div>
+
+    <div class="layout-grid">
+      <!-- Left column: Datasheet + Summary -->
+      <div>
+        <!-- Datasheet card -->
+        <section id="datasheet" class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot"></span>
+              Datasheet
+            </div>
+            <div class="card-meta">Project overview</div>
+          </div>
+
+          <div class="datasheet-grid">
+            <div class="datasheet-label">Title</div>
+            <div class="datasheet-value">
+              Sketchpad: A Man-Machine Graphical Communication System
+            </div>
+
+            <div class="datasheet-label">Author</div>
+            <div class="datasheet-value">
+              Ivan Edward Sutherland
+            </div>
+
+            <div class="datasheet-label">Year</div>
+            <div class="datasheet-value">
+              1963
+            </div>
+
+            <div class="datasheet-label">Format</div>
+            <div class="datasheet-value">
+              Interactive graphical computer program;<br>
+              PhD thesis and technical report;<br>
+              Early computer-aided design (CAD) / human–computer interaction (HCI) prototype
+              <div class="tag-row">
+                <span class="tag">Program</span>
+                <span class="tag">PhD Thesis</span>
+                <span class="tag">Technical Report</span>
+              </div>
+            </div>
+
+            <div class="datasheet-label">Intended Audience</div>
+            <div class="datasheet-value">
+              Computer science and engineering researchers at MIT and affiliated labs;<br>
+              Military and industrial sponsors interested in interactive computing and engineering design;<br>
+              Early human–computer interaction and computer graphics communities (emerging)
+              <div class="tag-row">
+                <span class="tag">HCI</span>
+                <span class="tag">CAD</span>
+                <span class="tag">Computer Graphics</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Summary card -->
+        <section class="card" style="margin-top: 16px;">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot"></span>
+              Project Summary
+            </div>
+            <div class="card-meta">Context · Techniques · Significance</div>
+          </div>
+          <div class="summary-text">
+            <p>
+              Sketchpad is an interactive graphical computer program developed by Ivan Sutherland at MIT's Lincoln
+              Laboratory in 1963 as part of his PhD thesis. Running on the TX-2 computer, Sketchpad allowed a user
+              to draw, edit, and manipulate geometric shapes directly on a CRT screen using a light pen. It is widely
+              regarded as the ancestor of modern computer-aided design (CAD) systems and one of the first complete
+              graphical user interfaces.
+            </p>
+
+            <p>
+              Technically, Sketchpad introduced several key concepts: hierarchical master–instance structures (a
+              prototype–instance relationship later echoed in object-oriented programming), an early form of
+              entity–component data modeling, and geometric constraints that allowed users to specify relationships
+              such as fixed lengths, perpendicular lines, and coincident points. The system then enforced these
+              constraints by recalculating the drawing.
+            </p>
+
+            <p>
+              Culturally and historically, Sketchpad demonstrated that computers could be used not only for numerical
+              computation but also for visual thinking and design. It reframed the computer as an interactive partner
+              in drawing and reasoning about geometry, profoundly influencing later work in HCI, GUI design, CAD, and
+              interactive graphics.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right column: Bibliographies -->
+      <div>
+        <section id="author-bibliography" class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot"></span>
+              Author Bibliography
+            </div>
+            <div class="card-meta">Primary sources</div>
+          </div>
+
+          <div class="biblio-card">
+            <div class="biblio-label">Key texts</div>
+            <ol>
+              <li>
+                Sutherland, Ivan E. (1963). "Sketchpad: A Man-Machine Graphical Communication System."
+                PhD thesis, Massachusetts Institute of Technology.
+              </li>
+              <li>
+                Sutherland, Ivan E. (1963). "Sketchpad: A Man-Machine Graphical Communication System."
+                AFIPS Spring Joint Computer Conference Proceedings.
+              </li>
+              <li>
+                Sutherland, Ivan E. (1963). "Sketchpad Listings." Program listings of the Sketchpad system,
+                preserved by the Computer History Museum.
+              </li>
+              <li>
+                Sutherland, Ivan (2012). "The TX-2 Computer and Sketchpad." Lincoln Laboratory Journal, 19(1), 82–84.
+              </li>
+              <li>
+                Coons, Steven; Fitch, John; Johnson, Timothy (1964). "Computer Sketchpad" (Science Reporter episode).
+              </li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="secondary-bibliography" class="card" style="margin-top: 16px;">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="dot"></span>
+              Secondary Bibliography
+            </div>
+            <div class="card-meta">Others writing about Sketchpad</div>
+          </div>
+
+          <div class="biblio-card">
+            <div class="biblio-label">Critical and historical sources</div>
+            <ol>
+              <li>
+                Sears, Andrew; Jacko, Julie A. (2007).
+                <em>The Human–Computer Interaction Handbook: Fundamentals, Evolving Technologies and Emerging Applications</em>.
+                CRC Press.
+              </li>
+              <li>
+                Armstrong, Helen (ed.) (2016).
+                <em>Digital Design Theory: Readings from the Field</em>. Princeton Architectural Press.
+              </li>
+              <li>
+                Yares, Evan (2013). "50 Years of CAD."
+                <em>Design World</em>, February 2013, pp. 66–71.
+              </li>
+              <li>
+                Müller-Prove, Matthias. "Graphical User Interface of Sketchpad."
+              </li>
+              <li>
+                Kay, Alan (various talks and essays, e.g., 2007, 2024).
+              </li>
+              <li>
+                Computer History Museum. "Sketchpad and the History of Computer-Aided Design."
+              </li>
+              <li>
+                American Machinist (1998). "The CAD/CAM Hall of Fame."
+              </li>
+            </ol>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ============ PART 2 : LAYERS OF ANALYSIS ============ -->
+    <div class="part-label">
+      <span class="part-text">Part 2 · Layers of Analysis</span>
+      <span class="line"></span>
+    </div>
+
+    <div class="stack-grid">
+      <!-- Ontological Analysis -->
+      <section id="ontological-analysis" class="card">
+        <div class="analysis-heading">
+          <span class="analysis-chip">1</span>
+          <span class="analysis-title">Ontological Analysis</span>
+        </div>
+        <span class="analysis-prompt">What exists in the project — its components and building blocks</span>
+        <div class="analysis-text">
+          <p>
+            Sketchpad is built from a small, tightly defined set of primitives. The base drawable
+            elements are points, straight-line segments, circles, and arcs — every shape a user draws is
+            decomposed into combinations of these four entities.
+          </p>
+          <p>
+            Constraints (equal length, parallelism, perpendicularity, fixed angle, coincidence, tangency)
+            are not visual decoration; they are stored as first-class data objects alongside the geometry
+            itself. When a user changes one part of a drawing, the system re-solves all attached constraints
+            and updates every dependent element automatically.
+          </p>
+          <p>
+            A <em>master</em> defines a reusable pattern (for example, a single bolt or gear tooth); an
+            <em>instance</em> is a placed copy that inherits the master's internal structure but can be
+            independently scaled, rotated, translated, or mirrored. Editing the master propagates the change
+            to every instance — a direct ancestor of the class/object distinction later formalized in
+            object-oriented programming, and of the symbol/instance pattern still used in tools like
+            Illustrator, Figma, or CAD software today.
+          </p>
+          <p>
+            Every drawing element is stored as a node in a "ring" structure with pointers linking it to its
+            master, its instances, and the constraints touching it. Behavior is attached through function
+            pointers rather than hard-coded per type — an early, primitive form of what would later be called
+            polymorphism, structurally close to a modern entity-component system. The light pen and CRT
+            display are likewise constitutive components: without a device capable of pointing directly at the
+            screen and receiving instantaneous visual feedback, none of the above would be operable in the way
+            Sutherland designed it.
+          </p>
+          <p>
+            Taken together, these components define not just <em>what</em> Sketchpad can represent, but what
+            it cannot: anything that cannot be reduced to points, lines, circles, and numerically expressible
+            constraints simply does not exist within the system's world — a boundary worth noting, since every
+            ontology is also a definition of what counts as a legitimate object of thought within it.
+          </p>
+        </div>
+      </section>
+
+      <!-- Historical and Contextual Analysis -->
+      <section id="historical-analysis" class="card">
+        <div class="analysis-heading">
+          <span class="analysis-chip">2</span>
+          <span class="analysis-title">Historical and Contextual Analysis</span>
+        </div>
+        <span class="analysis-prompt">The context of its making, what the author was responding to, and its intended audience</span>
+        <div class="analysis-text">
+          <p>
+            Sketchpad was developed by Ivan Sutherland between 1962 and 1963 as his PhD thesis at MIT, running
+            on the TX-2 — a large experimental computer at MIT Lincoln Laboratory. Lincoln Lab's research
+            mandate at the time was shaped by Cold War priorities: radar systems, air defense, and real-time
+            computing for military applications. Sketchpad was therefore not conceived as a commercial drafting
+            product or an artistic experiment; it emerged from a defense-funded research environment where the
+            central open question was whether a human and a computer could interact in <em>real time</em>,
+            through a shared visual medium, rather than through the batch-processing model that dominated
+            computing at the time.
+          </p>
+          <p>
+            In 1963, virtually all computing was batch computing: a program was punched onto cards, submitted
+            to an operator, queued, run, and its results returned — often hours later — with no live feedback
+            loop between person and machine. Sketchpad's light pen and CRT interface broke this model entirely,
+            letting a user draw, select, and modify geometry with an immediate visual response on screen. Later
+            historians of computing (and Sutherland himself, in retrospective interviews) have identified this
+            — not "computer graphics" as a category, nor CAD as an application — as Sketchpad's central
+            contribution: proof that a conversational, iterative loop between human and machine was technically
+            possible at all.
+          </p>
+          <p>
+            The intended audience at the time of its making was narrow and specific: the small circle of
+            Cold War-era computer science researchers at MIT and Lincoln Lab, and the military and industrial
+            sponsors funding this research, who were interested in the practical potential of interactive
+            computing for engineering drafting and design. The far larger audience that now claims Sketchpad
+            as foundational — the HCI, CAD, and computer graphics communities — was constructed
+            retrospectively, after the fact, as those fields matured and looked back for an origin story.
+            Sketchpad's significance as we understand it today is therefore partly a historical construction
+            produced by later communities of practice, not a fixed property of the 1963 project alone.
+          </p>
+        </div>
+      </section>
+
+      <!-- Visual and Aesthetic Analysis -->
+      <section id="visual-analysis" class="card">
+        <div class="analysis-heading">
+          <span class="analysis-chip">3</span>
+          <span class="analysis-title">Visual and Aesthetic Representation</span>
+        </div>
+        <span class="analysis-prompt">How the project communicates visually, and whether this style has its own precedent or community</span>
+        <div class="analysis-text">
+          <p>
+            Sketchpad's visual language is deliberately austere: thin vector lines rendered on a dark CRT
+            phosphor screen, geometric primitives with no color, no shading, and no textural variation. This
+            austerity is partly a direct consequence of the display hardware available in 1963, but it also
+            reflects a deeper representational choice about what the system considers worth showing. The
+            aesthetic is diagrammatic rather than pictorial — it belongs to the tradition of engineering and
+            technical drafting (orthographic projection, explicit dimensioning, precise notational marks)
+            rather than to painting, photography, or expressive illustration.
+          </p>
+          <p>
+            In this sense, Sketchpad's visual style is not a rupture from prior representational conventions
+            but a computational continuation of the drafting table: the light pen functionally replaces the
+            pencil and straightedge, while the underlying conventions — clean lines, explicit dimensional
+            constraints, notation over expression — carry over almost unchanged. This situates Sketchpad within
+            the long-standing community of practice built around technical and engineering drawing, and
+            positions it as a direct ancestor of later CAD and parametric design software, which inherit the
+            same visual grammar of precise line, dimension, and constraint.
+          </p>
+          <p>
+            At the same time, this visual style encodes a claim about legitimate knowledge: the screen displays
+            only what has been formalized into points, lines, and constraints, while the constraint-solving
+            machinery, memory structures, and computation happening beneath the surface remain entirely
+            invisible to the user. The interface reveals a clean, manipulable image while concealing the
+            computational apparatus producing it — a pattern that recurs throughout the history of graphical
+            interfaces and runs directly through to today's AI and software interfaces, where a clean visible
+            output similarly conceals significant underlying complexity. Sketchpad's visual and aesthetic
+            choices are not merely a technical limitation of 1963 hardware; they represent one of the earliest
+            instances of a now-ubiquitous interface logic — showing the result, hiding the machine.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
